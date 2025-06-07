@@ -1,1 +1,2 @@
 openai-agents
+tenacity
