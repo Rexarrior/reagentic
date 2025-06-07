@@ -1,1 +1,1 @@
-from .openrouter import OpenrouterProvider
+from .openrouter import OpenrouterProvider, OpenrouterAvailableModels

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='reagentic-framework',
+    name='reagentic',
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
@@ -12,7 +12,7 @@ setup(
     description='Tool library to create agents with openai-agents',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/reagentic-framework',
+    url='https://github.com/rexarrior/reagentic',
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',

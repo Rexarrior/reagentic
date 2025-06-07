@@ -16,5 +16,5 @@ class BaseProvider(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_run_config(self):
+    def get_openai_model(self):
         pass
