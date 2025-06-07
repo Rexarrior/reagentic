@@ -1,0 +1,15 @@
+# Byte-code files
+*.pyc
+__pycache__/
+
+# Distribution / build
+/dist
+/build
+/*.egg-info/
+
+# Virtual environment
+/venv
+/.venv
+.env
+
+reagentic_framework.egg
