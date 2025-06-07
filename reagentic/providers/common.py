@@ -10,6 +10,6 @@ class ModelInfo(BaseModel):
     'price per 1mln output token. If free, then 0'
     description: str
     "description of the model"
-    
+
     def __str__(self):
         return self.str_identifier
