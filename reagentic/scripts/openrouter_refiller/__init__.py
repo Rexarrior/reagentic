@@ -35,6 +35,7 @@ def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels)
     model_definitions = []
     model_names = []
     free_model_names = []
+    all_models_dict = {}
     for model in all_models:
         model_name = identifier_to_var_name(model.str_identifier)
         model_definitions.append(f"""
@@ -47,6 +48,7 @@ def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels)
 )
 """)
         model_names.append(model_name)
+        all_models_dict[model_name] = model_name
         if model.price_in == 0 and model.price_out == 0:
             free_model_names.append(model_name)
 
@@ -60,7 +62,12 @@ def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels)
         free_models_list += f"    {name},\n"
     free_models_list += "]"
 
-    new_content = f"{import_statement}\n\n{''.join(model_definitions)}\n{all_models_list}\n{free_models_list}\n"
+    all_models_dict_str = "ALL_MODELS_DICT = {\n"
+    for name in model_names:
+        all_models_dict_str += f'    "{name}": {name},\n'
+    all_models_dict_str += "}"
+
+    new_content = f"{import_statement}\n\n{''.join(model_definitions)}\n{all_models_list}\n{free_models_list}\n{all_models_dict_str}\n"
 
     # Write the new content to the file
     with open(path_to_file, 'wt', encoding="utf-8") as f:

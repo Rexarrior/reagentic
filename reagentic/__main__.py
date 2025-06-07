@@ -6,7 +6,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run reagentic scripts as modules.")
     parser.add_argument("--script", help="Name of the script to run (e.g., changelog_agent).")
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     if args.script:
         script_name = args.script
