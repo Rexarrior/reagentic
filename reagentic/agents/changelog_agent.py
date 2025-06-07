@@ -1,9 +1,8 @@
 from agents import Agent, Runner
 from  ..providers import openrouter
-from agents import Agent, FunctionTool, RunContextWrapper, function_tool
+from agents import Agent
 from ..tools import git_tools
-provider = openrouter.OpenrouterProvider(openrouter.DEEPSEEK_CHAT_V3_0324)
-
+from .common import default_provider
 SYSTEM_INSTRUCTION = '''
 'You are a Technical Writer, expert in changelog documentation.
 Your goal of life is to write a documentation the best world even meet.
@@ -16,7 +15,7 @@ def build_agent():
     agent = Agent(
         name="ChangelogExpert",
         instructions=SYSTEM_INSTRUCTION,
-        model=provider.get_openai_model(),
+        model=default_provider.get_openai_model(),
         output_type=str)
     return agent
 

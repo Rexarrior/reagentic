@@ -1,7 +1,7 @@
 
 from .models import AllOpenRouterModels
 from .client import get_all_openrouter_models
-from ..changelog_agent import get_git_commit_message
+from ...agents.changelog_agent import get_git_commit_message
 from ...tools import git_tools
 import os
 
@@ -10,8 +10,9 @@ models_relative_path_from_root = os.path.join(
 )
 
 def identifier_to_var_name(str_identifier: str):
-    formatted =  (str_identifier
-            .split(":")[0]
+    splitted = str_identifier.split("/")[1]
+    formatted =  (splitted
+            .replace(':', '_')
             .replace('/', '_')
             .replace('-', '_')
             .replace('.', '_')
@@ -30,17 +31,18 @@ def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels)
         if line.strip().startswith("from"):
             import_statement = line
             break
-
+    all_models = sorted(models.all_models, key=lambda x: x.str_identifier)
     model_definitions = []
     model_names = []
     free_model_names = []
-    for model in models.all_models:
+    for model in all_models:
         model_name = identifier_to_var_name(model.str_identifier)
         model_definitions.append(f"""
 {model_name} = ModelInfo(
     str_identifier="{model.str_identifier}",
     price_in={model.price_in},
     price_out={model.price_out},
+    creator="{model.creator}",
     description='''{model.description}'''
 )
 """)

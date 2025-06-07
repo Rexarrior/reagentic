@@ -42,7 +42,8 @@ def convert_to_model_infos(response: dict) -> AllOpenRouterModels:
                 str_identifier=model_data.get('id'),
                 price_in=model_data.get('pricing', {}).get('prompt', 0.0),
                 price_out=model_data.get('pricing', {}).get('completion', 0.0),
-                description=model_data.get('description', '')
+                description=model_data.get('description', ''),
+                creator=model_data.get('id').split("/")[0]
             )
             model_list.append(model_info)
         except Exception as e:
