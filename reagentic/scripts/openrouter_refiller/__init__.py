@@ -5,13 +5,24 @@ from ..changelog_agent import get_git_commit_message
 from ...tools import git_tools
 import os
 
-models_relative_path_from_root = os.path.json(
+models_relative_path_from_root = os.path.join(
 "reagentic", "providers", "openrouter", "available_models.py"
 )
 
-def rewrite_code_available_models(path_to_file: str, models=AllOpenRouterModels):
+def identifier_to_var_name(str_identifier: str):
+    formatted =  (str_identifier
+            .split(":")[0]
+            .replace('/', '_')
+            .replace('-', '_')
+            .replace('.', '_')
+            .upper())
+    if str.isdigit(formatted[0]):
+        formatted = f"D{formatted}"
+    return formatted
+
+def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels):
     # Read the existing file content to keep the import statement
-    with open(path_to_file, 'r') as f:
+    with open(path_to_file, 'rt', encoding='utf-8') as f:
         existing_content = f.read()
     
     import_statement = ""
@@ -22,27 +33,35 @@ def rewrite_code_available_models(path_to_file: str, models=AllOpenRouterModels)
 
     model_definitions = []
     model_names = []
-    for model in models.models:
-        model_name = model.id.replace('/', '_').replace('-', '_').upper()
+    free_model_names = []
+    for model in models.all_models:
+        model_name = identifier_to_var_name(model.str_identifier)
         model_definitions.append(f"""
 {model_name} = ModelInfo(
-    str_identifier="{model.id}",
-    price_in={model.pricing.prompt},
-    price_out={model.pricing.completion},
+    str_identifier="{model.str_identifier}",
+    price_in={model.price_in},
+    price_out={model.price_out},
     description='''{model.description}'''
 )
 """)
         model_names.append(model_name)
+        if model.price_in == 0 and model.price_out == 0:
+            free_model_names.append(model_name)
 
     all_models_list = "ALL_MODELS = [\n"
     for name in model_names:
         all_models_list += f"    {name},\n"
     all_models_list += "]"
 
-    new_content = f"{import_statement}\n\n{''.join(model_definitions)}\n{all_models_list}\n"
+    free_models_list = "FREE_MODELS = [\n"
+    for name in free_model_names:
+        free_models_list += f"    {name},\n"
+    free_models_list += "]"
+
+    new_content = f"{import_statement}\n\n{''.join(model_definitions)}\n{all_models_list}\n{free_models_list}\n"
 
     # Write the new content to the file
-    with open(path_to_file, 'w') as f:
+    with open(path_to_file, 'wt', encoding="utf-8") as f:
         f.write(new_content)
 
 def main():
