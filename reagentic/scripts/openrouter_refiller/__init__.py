@@ -44,7 +44,8 @@ def rewrite_code_available_models(path_to_file: str, models:AllOpenRouterModels)
     price_in={model.price_in},
     price_out={model.price_out},
     creator="{model.creator}",
-    description='''{model.description}'''
+    description='''{model.description},
+    created={model.created}'''
 )
 """)
         model_names.append(model_name)
