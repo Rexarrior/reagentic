@@ -6,7 +6,7 @@ from .common import default_paid_provider, default_free_provider
 from ..providers.common import ModelInfo
 from agents import Agent, Runner
 from pydantic import BaseModel
-
+from datetime import datetime
 
 STRICT_FORMAT = 'YOU MUST TO FOLLOW THE OUTPUT FORMAT VERY STRICTLY!YOU SHOULD PROVIDE ONLY REQUESTED FIELDS! NOT EXTRE FIELDS ALLOWED! ALL REQUESTED FIELDS ARE REQUIRED!'
 BASIC_INSTRUCTION = 'You an LLM export. You should learn available models and choose one by users requirements.'
@@ -74,7 +74,7 @@ def choose_model(provider_name: str, request: str, is_paid: bool) -> ModelChoose
         agent = build_agent_paid()
     else:
         agent = build_agent_free()
-    prompt = f"{request}\n available models: {models_file_content}\n{STRICT_FORMAT}"
+    prompt = f"{request}\n available models: {models_file_content}\nNow: {datetime.now()}\n{STRICT_FORMAT}"
     choose = Runner.run_sync(agent, prompt)
     return choose.final_output
 
