@@ -28,7 +28,6 @@ def build_prompt_git_commit():
 def get_git_commit_message():
     agent = build_agent()
     prompt = build_prompt_git_commit()
-    print(f"Run agent with prompt \n{prompt}")
     message = Runner.run_sync(agent, prompt)
     return message.final_output
 
