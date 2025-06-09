@@ -13,3 +13,6 @@ __pycache__/
 .env
 
 reagentic_framework.egg
+
+reagentic/providers/private*
+ya.make
