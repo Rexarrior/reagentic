@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def _parse_env_file(file_path: str, var_name: str) -> str | None:
     """Parses a .env file and returns the value of a specific variable."""
     if not os.path.exists(file_path):
@@ -13,6 +14,7 @@ def _parse_env_file(file_path: str, var_name: str) -> str | None:
                 if key == var_name:
                     return value.strip()
     return None
+
 
 def get_env_var(var_name: str) -> str:
     """
@@ -33,7 +35,7 @@ def get_env_var(var_name: str) -> str:
         return value
 
     # 2) if not found in env, check current folder for .env file
-    current_dir_env = _parse_env_file(".env", var_name)
+    current_dir_env = _parse_env_file('.env', var_name)
     if current_dir_env is not None:
         return current_dir_env
 
@@ -41,7 +43,7 @@ def get_env_var(var_name: str) -> str:
     # then search for .env in folder where venv folder is placed
     if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
         venv_path = sys.prefix
-        parent_dir_env = _parse_env_file(os.path.join(os.path.dirname(venv_path), ".env"), var_name)
+        parent_dir_env = _parse_env_file(os.path.join(os.path.dirname(venv_path), '.env'), var_name)
         if parent_dir_env is not None:
             return parent_dir_env
 

@@ -1,5 +1,6 @@
 import abc
 
+
 class BaseProvider(abc.ABC):
     @property
     @abc.abstractmethod

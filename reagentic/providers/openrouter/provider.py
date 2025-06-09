@@ -7,17 +7,17 @@ from ...env_manager import get_env_var
 from ..base_provider import BaseProvider
 from ..common import ModelInfo
 
-    
 
 class ConfigConstants:
-    URL = "https://openrouter.ai/api/v1"
-    API_KEY_VAR = "OPENROUTER_API_KEY"
+    URL = 'https://openrouter.ai/api/v1'
+    API_KEY_VAR = 'OPENROUTER_API_KEY'
+
 
 class OpenrouterProvider(BaseProvider):
     def __init__(self, model: ModelInfo, key: str = None, disable_tracing: bool = True):
         """
         Initialize OpenRouter provider.
-        
+
         Args:
             model: ModelInfo instance containing model details
             key: Optional API key, if not provided will use environment variable
@@ -27,7 +27,7 @@ class OpenrouterProvider(BaseProvider):
         self._model = model
         self._url = ConfigConstants.URL
         self._api_key = key or get_env_var(ConfigConstants.API_KEY_VAR)
-        
+
         # Disable tracing by default for OpenRouter to prevent OpenAI API key messages
         if disable_tracing:
             set_tracing_disabled(True)
@@ -54,7 +54,4 @@ class OpenrouterProvider(BaseProvider):
         Creates a run_config for an Agent using the OpenRouter provider.
         """
         openai_client = self.get_client()
-        return OpenAIChatCompletionsModel(
-            model=self.model.str_identifier,
-            openai_client=openai_client
-        )
+        return OpenAIChatCompletionsModel(model=self.model.str_identifier, openai_client=openai_client)

@@ -2,15 +2,16 @@ import argparse
 import importlib
 import sys
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Run reagentic scripts as modules.")
-    parser.add_argument("--script", help="Name of the script to run (e.g., changelog_agent).")
+    parser = argparse.ArgumentParser(description='Run reagentic scripts as modules.')
+    parser.add_argument('--script', help='Name of the script to run (e.g., changelog_agent).')
 
     args, unknown = parser.parse_known_args()
 
     if args.script:
         script_name = args.script
-        module_name = f"reagentic.scripts.{script_name}"
+        module_name = f'reagentic.scripts.{script_name}'
 
         # try:
         module = importlib.import_module(module_name)
@@ -26,8 +27,9 @@ def main():
         #     print(f"Error running script '{script_name}': {e}")
         #     sys.exit(1)
     else:
-        print("No script specified. Use --script <script_name> to run a script.")
+        print('No script specified. Use --script <script_name> to run a script.')
         sys.exit(1)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

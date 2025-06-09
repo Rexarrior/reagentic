@@ -1,7 +1,6 @@
 from agents import Agent, function_tool
 
 
-
 class SubsystemBase:
     def __init__(self):
         if not hasattr(self, 'tools'):
@@ -11,7 +10,7 @@ class SubsystemBase:
         """
         Decorator that applies function_tool decorator and adds the result to subsystem tools.
         Inherits from function_tool functionality.
-        
+
         Usage:
             @subsystem.subsystem_tool
             def my_function(param: str) -> str:
@@ -19,10 +18,10 @@ class SubsystemBase:
         """
         # Apply the function_tool decorator
         tool_func = function_tool(func)
-        
+
         # Add the tool to the subsystem's tools list
         self.tools.append(tool_func)
-        
+
         return tool_func
 
     def get_tools(self):
