@@ -291,7 +291,7 @@ class MemorySubsystemBase(SubsystemBase):
         """
         return self.read_raw()
 
-    def write_raw(self, content: str) -> str:
+    def rewrite_raw(self, content: str) -> str:
         """
         Replace the entire content of the raw text storage.
 
@@ -322,7 +322,7 @@ class MemorySubsystemBase(SubsystemBase):
         return f'Raw text storage completely replaced. New content length: {len(content)} characters'
 
     @SubsystemBase.subsystem_tool()
-    def write_raw_t(self, content: str) -> str:
+    def rewrite_raw_t(self, content: str) -> str:
         """
         Replace the entire content of the raw text storage.
 
@@ -335,7 +335,7 @@ class MemorySubsystemBase(SubsystemBase):
         Returns:
             Confirmation with character count of new content
         """
-        return self.write_raw(content)
+        return self.rewrite_raw(content)
 
     def append_raw(self, content: str) -> str:
         """
