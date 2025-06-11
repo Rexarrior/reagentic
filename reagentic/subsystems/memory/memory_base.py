@@ -110,7 +110,6 @@ class MemorySubsystemBase(SubsystemBase):
                 # Log error but don't stop execution
                 print(f'Error in memory event handler: {e}')
 
-    @SubsystemBase.subsystem_tool
     def read_structure(self) -> str:
         """
         Read the current memory structure definition.
@@ -120,7 +119,16 @@ class MemorySubsystemBase(SubsystemBase):
         """
         return self.db.structure
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool('dynamic_structure')
+    def read_structure_t(self) -> str:
+        """
+        Read the current memory structure definition.
+
+        Returns the self-describing metadata about how this memory system is organized,
+        including information about all three storage types and their intended usage.
+        """
+        return self.read_structure()
+
     def modify_structure(self, new_structure: str) -> str:
         """
         Update the memory structure definition with new organizational metadata.
@@ -146,7 +154,23 @@ class MemorySubsystemBase(SubsystemBase):
 
         return f'Memory structure definition updated to: {new_structure}'
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool('dynamic_structure')
+    def modify_structure_t(self, new_structure: str) -> str:
+        """
+        Update the memory structure definition with new organizational metadata.
+
+        This tool allows dynamic evolution of the memory system's self-documentation,
+        enabling the agent to adapt its memory organization strategy over time based
+        on usage patterns and requirements.
+
+        Args:
+            new_structure: New description of how the memory system should be organized
+
+        Returns:
+            Confirmation message with the updated structure
+        """
+        return self.modify_structure(new_structure)
+
     def read_keys(self) -> list[str]:
         """
         List all available keys in the structured key-based storage.
@@ -156,7 +180,16 @@ class MemorySubsystemBase(SubsystemBase):
         """
         return list(self.db.key_based.keys())
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool('key_based')
+    def read_keys_t(self) -> list[str]:
+        """
+        List all available keys in the structured key-based storage.
+
+        Returns all key names from the dictionary storage, allowing discovery
+        of what structured data is currently stored in memory.
+        """
+        return self.read_keys()
+
     def read_by_key(self, key: str) -> str:
         """
         Retrieve value from key-based storage by key name.
@@ -174,7 +207,21 @@ class MemorySubsystemBase(SubsystemBase):
         else:
             return f"Key '{key}' not found in key-based storage"
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool('key_based')
+    def read_by_key_t(self, key: str) -> str:
+        """
+        Retrieve value from key-based storage by key name.
+
+        Accesses the structured dictionary storage to retrieve specific named data items.
+
+        Args:
+            key: The name/identifier of the data item to retrieve
+
+        Returns:
+            The stored value or an error message if key doesn't exist
+        """
+        return self.read_by_key(key)
+
     def write_by_key(self, key: str, value: str) -> str:
         """
         Store or update data in the structured key-based storage.
@@ -207,7 +254,24 @@ class MemorySubsystemBase(SubsystemBase):
 
         return f"Key '{key}' {action} in key-based storage with value: {value}"
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool('key_based')
+    def write_by_key_t(self, key: str, value: str) -> str:
+        """
+        Store or update data in the structured key-based storage.
+
+        Creates new entries or replaces existing ones in the dictionary storage.
+        This is ideal for storing facts, preferences, or any categorized information.
+
+        Args:
+            key: The name/identifier for the data item
+            value: The content to store
+
+        Returns:
+            Confirmation message indicating whether key was created or updated
+        """
+        return self.write_by_key(key, value)
+
+    # Raw text storage methods
     def read_raw(self) -> str:
         """
         Read the complete content of the raw text storage.
@@ -217,7 +281,16 @@ class MemorySubsystemBase(SubsystemBase):
         """
         return self.db.raw if self.db.raw else 'Raw text storage is empty'
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool()
+    def read_raw_t(self) -> str:
+        """
+        Read the complete content of the raw text storage.
+
+        Returns all unstructured text content, such as notes, logs, or free-form
+        observations that don't fit into the structured key-based system.
+        """
+        return self.read_raw()
+
     def write_raw(self, content: str) -> str:
         """
         Replace the entire content of the raw text storage.
@@ -248,7 +321,22 @@ class MemorySubsystemBase(SubsystemBase):
 
         return f'Raw text storage completely replaced. New content length: {len(content)} characters'
 
-    @SubsystemBase.subsystem_tool
+    @SubsystemBase.subsystem_tool()
+    def write_raw_t(self, content: str) -> str:
+        """
+        Replace the entire content of the raw text storage.
+
+        Completely overwrites the unstructured text storage with new content.
+        Use this for replacing notes entirely or when starting fresh.
+
+        Args:
+            content: New text content to store
+
+        Returns:
+            Confirmation with character count of new content
+        """
+        return self.write_raw(content)
+
     def append_raw(self, content: str) -> str:
         """
         Append new content to the raw text storage.
@@ -282,6 +370,23 @@ class MemorySubsystemBase(SubsystemBase):
         )
 
         return f'Content appended to raw text storage. Total length: {len(self.db.raw)} characters'
+
+    @SubsystemBase.subsystem_tool()
+    def append_raw_t(self, content: str) -> str:
+        """
+        Append new content to the raw text storage.
+
+        Adds new text to the end of existing unstructured content, automatically
+        handling line breaks. Ideal for adding new notes, observations, or log entries
+        without losing existing content.
+
+        Args:
+            content: Text content to append
+
+        Returns:
+            Confirmation with total character count after appending
+        """
+        return self.append_raw(content)
 
     def _get_timestamp(self) -> str:
         """Get current timestamp for event data"""

@@ -1,0 +1,5 @@
+{
+  "structure": "This memory system contains three storage types: (1) Structure definition - dynamic metadata describing memory organization, updatable via tools; (2) Key-based storage - structured dictionary for named data items; (3) Raw text storage - unstructured text for notes and free-form content supporting both replacement and appending operations.",
+  "key_based": {},
+  "raw": "Haiku about recursion in programming:\nEndless looping paths,\nA function calls itself—deep,\nEchoes in the code.\nHaiku about recursion in programming:\n\nLoop within itself,\nAnswers nested, deep, unseen—\nCode returns again.\nHaiku about recursion in programming:\n\nInfinite mirror\nCode calls upon itself, deep—\nLoops within the mind.\n"
+}

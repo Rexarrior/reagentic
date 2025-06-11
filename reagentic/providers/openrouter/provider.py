@@ -6,6 +6,7 @@ from agents import set_tracing_disabled
 from ...env_manager import get_env_var
 from ..base_provider import BaseProvider
 from ..common import ModelInfo
+from ...logging import get_logger, provider_context
 
 
 class ConfigConstants:
@@ -28,9 +29,16 @@ class OpenrouterProvider(BaseProvider):
         self._url = ConfigConstants.URL
         self._api_key = key or get_env_var(ConfigConstants.API_KEY_VAR)
 
+        # Initialize logger
+        self._logger = get_logger('providers.openrouter')
+
         # Disable tracing by default for OpenRouter to prevent OpenAI API key messages
         if disable_tracing:
             set_tracing_disabled(True)
+
+        # Log provider initialization
+        with provider_context('openrouter', model.str_identifier):
+            self._logger.log_provider_call('openrouter', 'initialize', model=model.str_identifier)
 
     @property
     def url(self) -> str:
@@ -44,14 +52,22 @@ class OpenrouterProvider(BaseProvider):
         """
         Creates an OpenAI client configured for OpenRouter.
         """
-        return AsyncOpenAI(
-            base_url=self.url,
-            api_key=self._api_key,
-        )
+        with provider_context('openrouter', self._model.str_identifier):
+            self._logger.log_provider_call('openrouter', 'get_client', model=self._model.str_identifier)
+
+            return AsyncOpenAI(
+                base_url=self.url,
+                api_key=self._api_key,
+            )
 
     def get_openai_model(self) -> OpenAIChatCompletionsModel:
         """
         Creates a run_config for an Agent using the OpenRouter provider.
         """
-        openai_client = self.get_client()
-        return OpenAIChatCompletionsModel(model=self.model.str_identifier, openai_client=openai_client)
+        with provider_context('openrouter', self._model.str_identifier):
+            self._logger.log_provider_call('openrouter', 'get_openai_model', model=self._model.str_identifier)
+
+            openai_client = self.get_client()
+            model = OpenAIChatCompletionsModel(model=self.model.str_identifier, openai_client=openai_client)
+
+            return model

@@ -16,3 +16,6 @@ reagentic_framework.egg
 
 reagentic/providers/private*
 ya.make
+
+logs
+libpy3ai-agents-reagentic.global.a
