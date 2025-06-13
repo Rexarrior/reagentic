@@ -389,7 +389,98 @@ class MemorySubsystemBase(SubsystemBase):
         return self.append_raw(content)
 
     def _get_timestamp(self) -> str:
-        """Get current timestamp for event data"""
+        """Get current timestamp as string."""
         from datetime import datetime
-
         return datetime.now().isoformat()
+
+    def enrich_raw(self, text: str) -> str:
+        """
+        Enrich text by appending raw memory content.
+        
+        Args:
+            text: The original text/prompt to enrich
+            
+        Returns:
+            Text with raw memory content appended
+        """
+        raw_content = self.read_raw()
+        if raw_content.strip():
+            return f"{text}\n\n--- Raw Memory Content ---\n{raw_content}"
+        else:
+            return f"{text}\n\n--- Raw Memory Content ---\n(No raw memory content available)"
+    
+    def enrich_keys(self, text: str) -> str:
+        """
+        Enrich text by appending key-based memory information.
+        
+        Args:
+            text: The original text/prompt to enrich
+            
+        Returns:
+            Text with key-based memory keys and values appended
+        """
+        keys = self.read_keys()
+        if keys:
+            key_info = []
+            for key in keys:
+                try:
+                    value = self.read_by_key(key)
+                    key_info.append(f"  {key}: {value}")
+                except Exception as e:
+                    key_info.append(f"  {key}: (error reading: {e})")
+            
+            keys_content = "\n".join(key_info)
+            return f"{text}\n\n--- Key-Based Memory ---\n{keys_content}"
+        else:
+            return f"{text}\n\n--- Key-Based Memory ---\n(No key-based memory entries available)"
+    
+    def enrich_structure(self, text: str) -> str:
+        """
+        Enrich text by appending memory structure information.
+        
+        Args:
+            text: The original text/prompt to enrich
+            
+        Returns:
+            Text with memory structure definition appended
+        """
+        structure = self.read_structure()
+        return f"{text}\n\n--- Memory Structure ---\n{structure}"
+    
+    def enrich_full(self, text: str) -> str:
+        """
+        Enrich text by appending all memory information (structure, keys, and raw content).
+        
+        Args:
+            text: The original text/prompt to enrich
+            
+        Returns:
+            Text with complete memory information appended
+        """
+        # Start with structure
+        enriched = self.enrich_structure(text)
+        
+        # Add key-based memory
+        keys = self.read_keys()
+        if keys:
+            key_info = []
+            for key in keys:
+                try:
+                    value = self.read_by_key(key)
+                    key_info.append(f"  {key}: {value}")
+                except Exception as e:
+                    key_info.append(f"  {key}: (error reading: {e})")
+            
+            keys_content = "\n".join(key_info)
+            enriched += f"\n\n--- Key-Based Memory ---\n{keys_content}"
+        else:
+            enriched += f"\n\n--- Key-Based Memory ---\n(No key-based memory entries available)"
+        
+        # Add raw memory
+        raw_content = self.read_raw()
+        if raw_content.strip():
+            enriched += f"\n\n--- Raw Memory Content ---\n{raw_content}"
+        else:
+            enriched += f"\n\n--- Raw Memory Content ---\n(No raw memory content available)"
+        
+        return enriched
