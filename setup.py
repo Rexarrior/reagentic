@@ -6,6 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'openai-agents',
+        'pydantic>=2.0.0',
+        'pytest-asyncio>=1.0.0',
     ],
     author='Ksandr Renderon',
     author_email='rexarrior@example.com',
