@@ -141,8 +141,12 @@ class MemorySubsystemBase(SubsystemBase):
             new_structure: New description of how the memory system should be organized
 
         Returns:
-            Confirmation message with the updated structure
+            Combined response with current structure context and confirmation message
         """
+        # Get current structure for context
+        current_structure = self.db.structure
+        
+        # Update structure
         old_structure = self.db.structure
         self.db.structure = new_structure
 
@@ -152,7 +156,11 @@ class MemorySubsystemBase(SubsystemBase):
             {'old_value': old_structure, 'new_value': new_structure, 'timestamp': self._get_timestamp()},
         )
 
-        return f'Memory structure definition updated to: {new_structure}'
+        # Return context + confirmation
+        result = f'=== CURRENT STRUCTURE CONTEXT ===\n{current_structure}\n\n'
+        result += f'=== UPDATE RESULT ===\n'
+        result += f'Memory structure definition updated to: {new_structure}'
+        return result
 
     @SubsystemBase.subsystem_tool('dynamic_structure')
     def modify_structure_t(self, new_structure: str) -> str:
@@ -167,7 +175,7 @@ class MemorySubsystemBase(SubsystemBase):
             new_structure: New description of how the memory system should be organized
 
         Returns:
-            Confirmation message with the updated structure
+            Combined response with current structure context and confirmation message
         """
         return self.modify_structure(new_structure)
 
@@ -200,7 +208,7 @@ class MemorySubsystemBase(SubsystemBase):
             key: The name/identifier of the data item to retrieve
 
         Returns:
-            The stored value or an error message if key doesn't exist
+            The stored value for the key, or error message if key doesn't exist
         """
         if key in self.db.key_based:
             return self.db.key_based[key]
@@ -218,7 +226,7 @@ class MemorySubsystemBase(SubsystemBase):
             key: The name/identifier of the data item to retrieve
 
         Returns:
-            The stored value or an error message if key doesn't exist
+            The stored value for the key, or error message if key doesn't exist
         """
         return self.read_by_key(key)
 
@@ -234,8 +242,15 @@ class MemorySubsystemBase(SubsystemBase):
             value: The content to store
 
         Returns:
-            Confirmation message indicating whether key was created or updated
+            Combined response with all current keys context and confirmation message
         """
+        # Get all current keys for context
+        current_keys = self.read_keys()
+        current_key_values = {}
+        for k in current_keys:
+            current_key_values[k] = self.read_by_key(k)
+        
+        # Perform the write operation
         old_value = self.db.key_based.get(key)
         action = 'updated' if key in self.db.key_based else 'created'
         self.db.key_based[key] = value
@@ -252,7 +267,17 @@ class MemorySubsystemBase(SubsystemBase):
             },
         )
 
-        return f"Key '{key}' {action} in key-based storage with value: {value}"
+        # Return context + confirmation
+        result = f'=== CURRENT KEY-VALUE STORAGE CONTEXT ===\n'
+        if current_key_values:
+            for k, v in current_key_values.items():
+                result += f'{k}: {v}\n'
+        else:
+            result += '(No existing key-value pairs)\n'
+        
+        result += f'\n=== UPDATE RESULT ===\n'
+        result += f"Key '{key}' {action} in key-based storage with value: {value}"
+        return result
 
     @SubsystemBase.subsystem_tool('key_based')
     def write_by_key_t(self, key: str, value: str) -> str:
@@ -267,7 +292,7 @@ class MemorySubsystemBase(SubsystemBase):
             value: The content to store
 
         Returns:
-            Confirmation message indicating whether key was created or updated
+            Combined response with all current keys context and confirmation message
         """
         return self.write_by_key(key, value)
 
@@ -302,8 +327,12 @@ class MemorySubsystemBase(SubsystemBase):
             content: New text content to store
 
         Returns:
-            Confirmation with character count of new content
+            Combined response with whole current raw memory context and confirmation message
         """
+        # Get whole current raw memory for context
+        current_raw = self.db.raw
+        
+        # Perform the rewrite operation
         old_content = self.db.raw
         self.db.raw = content
 
@@ -319,7 +348,16 @@ class MemorySubsystemBase(SubsystemBase):
             },
         )
 
-        return f'Raw text storage completely replaced. New content length: {len(content)} characters'
+        # Return context + confirmation
+        result = f'=== CURRENT RAW MEMORY CONTEXT ===\n'
+        if current_raw.strip():
+            result += current_raw
+        else:
+            result += '(Raw memory was empty)'
+        
+        result += f'\n\n=== UPDATE RESULT ===\n'
+        result += f'Raw text storage completely replaced. New content length: {len(content)} characters'
+        return result
 
     @SubsystemBase.subsystem_tool()
     def rewrite_raw_t(self, content: str) -> str:
@@ -333,7 +371,7 @@ class MemorySubsystemBase(SubsystemBase):
             content: New text content to store
 
         Returns:
-            Confirmation with character count of new content
+            Combined response with whole current raw memory context and confirmation message
         """
         return self.rewrite_raw(content)
 
@@ -349,8 +387,26 @@ class MemorySubsystemBase(SubsystemBase):
             content: Text content to append
 
         Returns:
-            Confirmation with total character count after appending
+            Combined response with relevant raw memory context (2x lines being written) and confirmation message
         """
+        # Calculate lines being written
+        new_lines = content.count('\n') + 1 if content else 0
+        context_lines_needed = max(new_lines * 2, 5)  # At least 5 lines for context
+        
+        # Get current raw memory for context
+        current_raw = self.db.raw
+        current_raw_lines = current_raw.split('\n') if current_raw else []
+        
+        # Get the last N lines for context
+        if len(current_raw_lines) > context_lines_needed:
+            context_lines = current_raw_lines[-context_lines_needed:]
+            context_raw = '\n'.join(context_lines)
+            context_info = f'(Showing last {context_lines_needed} lines of {len(current_raw_lines)} total)'
+        else:
+            context_raw = current_raw
+            context_info = f'(Showing all {len(current_raw_lines)} lines)'
+        
+        # Perform the append operation
         old_content = self.db.raw
         if self.db.raw and not self.db.raw.endswith('\n'):
             self.db.raw += '\n'
@@ -369,7 +425,17 @@ class MemorySubsystemBase(SubsystemBase):
             },
         )
 
-        return f'Content appended to raw text storage. Total length: {len(self.db.raw)} characters'
+        # Return context + confirmation
+        result = f'=== RELEVANT RAW MEMORY CONTEXT ===\n'
+        result += f'{context_info}\n'
+        if context_raw.strip():
+            result += context_raw
+        else:
+            result += '(Raw memory was empty)'
+        
+        result += f'\n\n=== UPDATE RESULT ===\n'
+        result += f'Content appended to raw text storage. Total length: {len(self.db.raw)} characters'
+        return result
 
     @SubsystemBase.subsystem_tool()
     def append_raw_t(self, content: str) -> str:
@@ -384,7 +450,7 @@ class MemorySubsystemBase(SubsystemBase):
             content: Text content to append
 
         Returns:
-            Confirmation with total character count after appending
+            Combined response with relevant raw memory context (2x lines being written) and confirmation message
         """
         return self.append_raw(content)
 

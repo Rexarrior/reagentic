@@ -1,4 +1,6 @@
 import abc
+from typing import Union
+from .common import ModelInfo
 
 
 class BaseProvider(abc.ABC):
@@ -9,7 +11,7 @@ class BaseProvider(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def model(self) -> str:
+    def model(self) -> Union[str, ModelInfo]:
         pass
 
     @abc.abstractmethod
