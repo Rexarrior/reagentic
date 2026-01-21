@@ -18,21 +18,31 @@ Welcome to the Reagentic framework documentation. This directory contains compre
   - Context tracking and performance monitoring
   - Integration with agents and providers
 
+- **[Protocol System](PROTOCOL.md)** - Structured agent run logging and analysis
+  - Event tracking (agent, LLM, tool, trace, span)
+  - Automatic duration calculation
+  - Multiple storage backends (SQLite, JSONLines)
+  - Configurable detail levels
+
 ## 🚀 Quick Navigation
 
 ### Getting Started
 - [Subsystem Pattern Basics](SUBSYSTEM_PATTERN.md#quick-start) - Create your first subsystem
 - [Memory Subsystem Example](SUBSYSTEM_PATTERN.md#memory-subsystem-example) - Working with built-in memory
+- [Protocol System Basics](PROTOCOL.md#quick-start) - Set up agent run logging
 
 ### Advanced Topics
 - [Multi-Category Tools](SUBSYSTEM_PATTERN.md#multi-category-tools) - Organize tools by functionality
 - [Event-Driven Subsystems](SUBSYSTEM_PATTERN.md#event-driven-subsystems) - Handle subsystem events
 - [Integration Patterns](SUBSYSTEM_PATTERN.md#integration-patterns) - Combine multiple subsystems
+- [Duration Tracking](PROTOCOL.md#duration-tracking) - Automatic timing for agent operations
+- [Storage Backends](PROTOCOL.md#storage-backends) - SQLite and JSONLines options
 
 ### Best Practices
 - [Architecture Guidelines](SUBSYSTEM_PATTERN.md#architecture) - Design patterns and principles
 - [Error Handling](SUBSYSTEM_PATTERN.md#best-practices) - Robust error management
 - [Troubleshooting](SUBSYSTEM_PATTERN.md#troubleshooting) - Common issues and solutions
+- [Protocol Best Practices](PROTOCOL.md#best-practices) - Effective protocol logging
 
 ## 🏗️ Framework Architecture
 
@@ -42,6 +52,7 @@ The Reagentic framework is built around several key concepts:
 2. **Tools** - Agent capabilities exposed through the subsystem pattern
 3. **Categories** - Logical groupings of tools for flexible agent configuration
 4. **Events** - Reactive patterns for subsystem interaction and monitoring
+5. **Protocol** - Structured logging of agent runs for debugging and analysis
 
 ## 📖 Documentation Standards
 
