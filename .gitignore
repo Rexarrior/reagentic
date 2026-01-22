@@ -19,3 +19,33 @@ ya.make
 
 logs
 libpy3ai-agents-reagentic.global.a
+
+# Protocol files
+*.db
+*.db-shm
+*.db-wal
+*.jsonl
+protocol.db
+protocol.jsonl
+
+# Node.js / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend build artifacts
+reagentic/utilities/protocol_viewer/frontend/dist/
+reagentic/utilities/protocol_viewer/frontend/.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

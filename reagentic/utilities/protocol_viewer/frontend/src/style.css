@@ -1,0 +1,185 @@
+:root {
+  /* Cyberpunk-inspired dark theme */
+  --bg-primary: #0a0e14;
+  --bg-secondary: #11151c;
+  --bg-tertiary: #1a1f2a;
+  --bg-elevated: #232936;
+  
+  --text-primary: #e6e6e6;
+  --text-secondary: #8b949e;
+  --text-muted: #6b737d;
+  
+  --accent-cyan: #00d9ff;
+  --accent-purple: #bd93f9;
+  --accent-green: #50fa7b;
+  --accent-orange: #ffb86c;
+  --accent-pink: #ff79c6;
+  --accent-red: #ff5555;
+  --accent-yellow: #f1fa8c;
+  
+  --border-color: #2d3748;
+  --border-subtle: #1e2530;
+  
+  --node-agent: var(--accent-cyan);
+  --node-llm: var(--accent-purple);
+  --node-tool: var(--accent-orange);
+  --node-error: var(--accent-red);
+  
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --shadow-glow: 0 0 20px rgba(0, 217, 255, 0.15);
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Utility classes */
+.mono {
+  font-family: var(--font-mono);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+/* Vue Flow overrides */
+.vue-flow {
+  background: var(--bg-secondary) !important;
+}
+
+.vue-flow__node {
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+
+.vue-flow__edge-path {
+  stroke: var(--border-color);
+  stroke-width: 2;
+}
+
+.vue-flow__edge.animated path {
+  stroke: var(--accent-cyan);
+  animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+/* Custom node styles */
+.protocol-node {
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  min-width: 140px;
+  box-shadow: var(--shadow-subtle);
+  transition: all 0.2s ease;
+}
+
+.protocol-node:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow);
+}
+
+.protocol-node.selected {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.3);
+}
+
+.protocol-node.agent {
+  border-left: 4px solid var(--node-agent);
+}
+
+.protocol-node.llm {
+  border-left: 4px solid var(--node-llm);
+}
+
+.protocol-node.tool {
+  border-left: 4px solid var(--node-tool);
+}
+
+.protocol-node.error {
+  border-color: var(--node-error);
+  background: rgba(255, 85, 85, 0.1);
+}
+
+.protocol-node__label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.protocol-node__meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Animation for timeline */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
