@@ -13,6 +13,27 @@ class ModelInfo(BaseModel):
     creator: str = Field(..., description='Creator of the model (e.g., Google, OpenAI)')
     created: Optional[int] = Field(None, description='Unix timestamp (seconds since epoch) when the model was created')
 
+    @classmethod
+    def from_string(cls, str_identifier: str) -> "ModelInfo":
+        """
+        Create a minimal ModelInfo from just a string identifier.
+        
+        Useful when you only know the model ID and don't need pricing/metadata.
+        
+        Args:
+            str_identifier: The model identifier (e.g., 'deepseek/deepseek-chat')
+            
+        Returns:
+            ModelInfo with the identifier and default values for other fields
+        """
+        return cls(
+            str_identifier=str_identifier,
+            price_in=0,
+            price_out=0,
+            description="",
+            creator=str_identifier.split('/')[0] if '/' in str_identifier else ""
+        )
+
     def __str__(self) -> str:
         """Return the string identifier of the model."""
         return self.str_identifier

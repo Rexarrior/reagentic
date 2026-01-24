@@ -15,12 +15,12 @@ class OpenrouterProvider(OpenAICompatibleProvider):
     OpenRouter provides access to various AI models through a unified OpenAI-compatible API.
     """
     
-    def __init__(self, model: ModelInfo, key: Optional[str] = None, disable_tracing: bool = True):
+    def __init__(self, model: ModelInfo | str, key: Optional[str] = None, disable_tracing: bool = True):
         """
         Initialize OpenRouter provider.
 
         Args:
-            model: ModelInfo instance containing model details
+            model: ModelInfo instance or string identifier (e.g., 'deepseek/deepseek-chat')
             key: Optional API key, if not provided will use environment variable
             disable_tracing: Whether to disable tracing to prevent OpenAI API key messages.
                            Defaults to True since OpenRouter doesn't need OpenAI tracing.

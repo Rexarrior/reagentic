@@ -19,7 +19,7 @@ class OpenAICompatibleProvider(BaseProvider):
     
     def __init__(
         self, 
-        model: ModelInfo, 
+        model: ModelInfo | str, 
         base_url: str,
         api_key_env_var: str,
         provider_name: str,
@@ -30,7 +30,7 @@ class OpenAICompatibleProvider(BaseProvider):
         Initialize OpenAI-compatible provider.
 
         Args:
-            model: ModelInfo instance containing model details
+            model: ModelInfo instance or string identifier (e.g., 'deepseek/deepseek-chat')
             base_url: Base URL for the API endpoint
             api_key_env_var: Environment variable name for the API key
             provider_name: Name of the provider for logging purposes
@@ -39,6 +39,9 @@ class OpenAICompatibleProvider(BaseProvider):
                            Defaults to True since most OpenAI-compatible providers 
                            don't need OpenAI tracing.
         """
+        # Convert string to ModelInfo if needed
+        if isinstance(model, str):
+            model = ModelInfo.from_string(model)
         self._model = model
         self._url = base_url
         self._api_key = key or get_env_var(api_key_env_var)
